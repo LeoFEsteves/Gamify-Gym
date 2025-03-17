@@ -5,7 +5,7 @@ USE gamify_gym;
 /* TODOS os alimentos tem seus atributos baseados em 1g (uma grama)*/
 CREATE TABLE if not exists foods(
 	id_food INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(25) NOT NULL,
+    name_food VARCHAR(25) NOT NULL,
     calories DOUBLE NOT NULL,
     proteins DOUBLE NOT NULL,
     carbohydrates DOUBLE NOT NULL,
@@ -32,13 +32,13 @@ DELIMITER ;
 
 CREATE TABLE if not exists exercises(
 	id_exercise INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(25) NOT NULL,
+    name_exercises VARCHAR(25) NOT NULL,
     muscles VARCHAR(25) NOT NULL -- Músculos que são treinados nesse exercício separados por vírgulas
 );
 
 CREATE TABLE if not exists workouts(
 	id_workout INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(25) NOT NULL,
+    name_workouts VARCHAR(25) NOT NULL,
     description VARCHAR(255) NOT NULL -- Espaço para o usuário colocar observações e etc
 );
 
