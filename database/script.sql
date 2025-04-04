@@ -9,7 +9,13 @@ CREATE TABLE if not exists foods(
     calories DOUBLE NOT NULL,
     proteins DOUBLE NOT NULL,
     carbohydrates DOUBLE NOT NULL,
-    fats DOUBLE NOT NULL,
+    total_sugar DOUBLE NOT NULL,
+    added_sugar DOUBLE NOT NULL,
+    total_fats DOUBLE NOT NULL,
+    trans_fats DOUBLE NOT NULL,
+    monounsaturated_fats DOUBLE NOT NULL,
+    polyunsaturated_fats DOUBLE NOT NULL,
+    satured_fats DOUBLE NOT NULL,
     fibers DOUBLE NOT NULL,
 	sodium DOUBLE NOT NULL
 );
@@ -45,8 +51,9 @@ CREATE TABLE if not exists workouts(
 /* Tabela para reduzir a redundãncia dos dados e associar as tabelas treinos e exercicios*/
 CREATE TABLE if not exists exercises_workout(
 	id_exercise_workout INT AUTO_INCREMENT PRIMARY KEY,
-	min_reps TINYINT NOT NULL, -- Atributo vinculado ao alcance de repetições
-    max_reps TINYINT NOT NULL, -- Atributo vinculado ao alcance de repetições
+	min_reps TINYINT, -- Atributo vinculado ao alcance de repetições
+    max_reps TINYINT, -- Atributo vinculado ao alcance de repetições
+    time TIME, -- Tempo em um exercício(prancha por exemplo)
     n_sets TINYINT NOT NULL,
     exercise_id INT,
     workout_id INT
