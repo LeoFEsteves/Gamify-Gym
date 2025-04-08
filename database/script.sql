@@ -65,3 +65,13 @@ FOREIGN KEY (exercise_id) REFERENCES exercises(id_exercise);
 ALTER TABLE exercises_workout
 ADD CONSTRAINT fk_workout
 FOREIGN KEY (workout_id) REFERENCES workouts(id_workout);
+
+CREATE TABLE if not exists user(
+	id_user INT AUTO_INCREMENT PRIMARY KEY,
+    name_user VARCHAR(25) NOT NULL,
+    password VARCHAR(25) NOT NULL
+);
+CREATE TABLE if not exists personal_trainers(
+	id_personal_trainer INT AUTO_INCREMENT PRIMARY KEY,
+    cref VARCHAR(20) NOT NULL UNIQUE
+);
