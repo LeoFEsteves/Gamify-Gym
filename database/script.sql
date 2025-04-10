@@ -26,6 +26,12 @@ CREATE TABLE if not exists exercises(
     muscles VARCHAR(25) NOT NULL -- Músculos que são treinados nesse exercício separados por vírgulas
 );
 
+CREATE TABLE if not exists users(
+	id_user INT AUTO_INCREMENT PRIMARY KEY,
+    name_user VARCHAR(25) NOT NULL,
+    password VARCHAR(25) NOT NULL
+);
+
 CREATE TABLE if not exists personal_trainers(
 	id_personal_trainer INT AUTO_INCREMENT PRIMARY KEY,
     cref VARCHAR(20) NOT NULL UNIQUE,
@@ -39,12 +45,6 @@ CREATE TABLE if not exists players(
     weight DOUBLE,
     user_id INT,
 	personal_trainer_id INT
-);
-
-CREATE TABLE if not exists users(
-	id_user INT AUTO_INCREMENT PRIMARY KEY,
-    name_user VARCHAR(25) NOT NULL,
-    password VARCHAR(25) NOT NULL
 );
 
 /* Tabela para reduzir a redundãncia dos dados e associar as tabelas treinos e exercicios*/
@@ -61,7 +61,8 @@ CREATE TABLE if not exists exercises_workouts(
 CREATE TABLE if not exists workouts(
 	id_workout INT AUTO_INCREMENT PRIMARY KEY,
     name_workouts VARCHAR(25) NOT NULL,
-    description VARCHAR(255) NOT NULL -- Espaço para o usuário colocar observações e etc
+    description VARCHAR(255) NOT NULL, -- Espaço para o usuário colocar observações e etc
+    player_id INT
 );
 
 DELIMITER //
@@ -89,20 +90,36 @@ DELIMITER ;
 
 ALTER TABLE exercises_workouts
 ADD CONSTRAINT fk_exercise
-FOREIGN KEY (exercise_id) REFERENCES exercises(id_exercise);
+FOREIGN KEY (exercise_id) REFERENCES exercises(id_exercise)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
 
 ALTER TABLE exercises_workouts
 ADD CONSTRAINT fk_workout
-FOREIGN KEY (workout_id) REFERENCES workouts(id_workout);
+FOREIGN KEY (workout_id) REFERENCES workouts(id_workout)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE workouts
+ADD CONSTRAINT fk_player_workout
+FOREIGN KEY (player_id) REFERENCES players(id_player)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
 
 ALTER TABLE players
 ADD CONSTRAINT fk_user_player
-FOREIGN KEY (user_id) REFERENCES users(id_user);
+FOREIGN KEY (user_id) REFERENCES users(id_user)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
 
 ALTER TABLE players
 ADD CONSTRAINT fk_personal_trainer_player
-FOREIGN KEY (personal_trainer_id) REFERENCES personal_trainers(id_personal_trainer);
+FOREIGN KEY (personal_trainer_id) REFERENCES personal_trainers(id_personal_trainer)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
 
 ALTER TABLE personal_trainers
 ADD CONSTRAINT fk_user_personal_trainer
-FOREIGN KEY (user_id) REFERENCES users(id_user);
+FOREIGN KEY (user_id) REFERENCES users(id_user)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
