@@ -20,6 +20,50 @@ CREATE TABLE if not exists foods(
 	sodium DOUBLE NOT NULL
 );
 
+CREATE TABLE if not exists exercises(
+	id_exercise INT AUTO_INCREMENT PRIMARY KEY,
+    name_exercises VARCHAR(25) NOT NULL,
+    muscles VARCHAR(25) NOT NULL -- Músculos que são treinados nesse exercício separados por vírgulas
+);
+
+CREATE TABLE if not exists personal_trainers(
+	id_personal_trainer INT AUTO_INCREMENT PRIMARY KEY,
+    cref VARCHAR(20) NOT NULL UNIQUE,
+    cpf VARCHAR(11) NOT NULL UNIQUE,
+	user_id INT
+);
+
+CREATE TABLE if not exists players(
+	id_player INT AUTO_INCREMENT PRIMARY KEY,
+    height DOUBLE,
+    weight DOUBLE,
+    user_id INT,
+	personal_trainer_id INT
+);
+
+CREATE TABLE if not exists users(
+	id_user INT AUTO_INCREMENT PRIMARY KEY,
+    name_user VARCHAR(25) NOT NULL,
+    password VARCHAR(25) NOT NULL
+);
+
+/* Tabela para reduzir a redundãncia dos dados e associar as tabelas treinos e exercicios*/
+CREATE TABLE if not exists exercises_workouts(
+	id_exercise_workout INT AUTO_INCREMENT PRIMARY KEY,
+	min_reps TINYINT, -- Atributo vinculado ao alcance de repetições
+    max_reps TINYINT, -- Atributo vinculado ao alcance de repetições
+    time TIME, -- Tempo em um exercício(prancha por exemplo)
+    n_sets TINYINT NOT NULL,
+    exercise_id INT,
+    workout_id INT
+);
+
+CREATE TABLE if not exists workouts(
+	id_workout INT AUTO_INCREMENT PRIMARY KEY,
+    name_workouts VARCHAR(25) NOT NULL,
+    description VARCHAR(255) NOT NULL -- Espaço para o usuário colocar observações e etc
+);
+
 DELIMITER //
 CREATE PROCEDURE add_food (
 	IN p_name_food VARCHAR(25),
@@ -36,34 +80,13 @@ CREATE PROCEDURE add_food (
     IN p_fibers DOUBLE, 
 	IN p_sodium DOUBLE 
 )
+
 BEGIN
 	INSERT INTO foods(name_food, calories, proteins, carbohydrates, total_sugar, added_sugar, total_fats, trans_fats, monounsaturated_fats, polyunsaturated_fats,satured_fats, fibers, sodium)
 	VALUES (p_name_food, p_calories, p_proteins, p_carbohydrates, p_total_sugar, p_added_sugar, p_total_fats, p_trans_fats, p_monounsaturated_fats, p_polyunsaturated_fats, p_satured_fats, p_fibers, p_sodium);
 END //
 DELIMITER ;
 
-CREATE TABLE if not exists exercises(
-	id_exercise INT AUTO_INCREMENT PRIMARY KEY,
-    name_exercises VARCHAR(25) NOT NULL,
-    muscles VARCHAR(25) NOT NULL -- Músculos que são treinados nesse exercício separados por vírgulas
-);
-
-CREATE TABLE if not exists workouts(
-	id_workout INT AUTO_INCREMENT PRIMARY KEY,
-    name_workouts VARCHAR(25) NOT NULL,
-    description VARCHAR(255) NOT NULL -- Espaço para o usuário colocar observações e etc
-);
-
-/* Tabela para reduzir a redundãncia dos dados e associar as tabelas treinos e exercicios*/
-CREATE TABLE if not exists exercises_workouts(
-	id_exercise_workout INT AUTO_INCREMENT PRIMARY KEY,
-	min_reps TINYINT, -- Atributo vinculado ao alcance de repetições
-    max_reps TINYINT, -- Atributo vinculado ao alcance de repetições
-    time TIME, -- Tempo em um exercício(prancha por exemplo)
-    n_sets TINYINT NOT NULL,
-    exercise_id INT,
-    workout_id INT
-);
 ALTER TABLE exercises_workouts
 ADD CONSTRAINT fk_exercise
 FOREIGN KEY (exercise_id) REFERENCES exercises(id_exercise);
@@ -72,28 +95,14 @@ ALTER TABLE exercises_workouts
 ADD CONSTRAINT fk_workout
 FOREIGN KEY (workout_id) REFERENCES workouts(id_workout);
 
-CREATE TABLE if not exists users(
-	id_user INT AUTO_INCREMENT PRIMARY KEY,
-    name_user VARCHAR(25) NOT NULL,
-    password VARCHAR(25) NOT NULL
-);
-
-CREATE TABLE if not exists players(
-	id_player INT AUTO_INCREMENT PRIMARY KEY,
-    height DOUBLE,
-    weight DOUBLE,
-    user_id INT
-);
 ALTER TABLE players
 ADD CONSTRAINT fk_user_player
 FOREIGN KEY (user_id) REFERENCES users(id_user);
 
-CREATE TABLE if not exists personal_trainers(
-	id_personal_trainer INT AUTO_INCREMENT PRIMARY KEY,
-    cref VARCHAR(20) NOT NULL UNIQUE,
-    cpf VARCHAR(11) NOT NULL UNIQUE,
-	user_id INT
-);
+ALTER TABLE players
+ADD CONSTRAINT fk_personal_trainer_player
+FOREIGN KEY (personal_trainer_id) REFERENCES personal_trainers(id_personal_trainer);
+
 ALTER TABLE personal_trainers
 ADD CONSTRAINT fk_user_personal_trainer
 FOREIGN KEY (user_id) REFERENCES users(id_user);
