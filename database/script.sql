@@ -22,17 +22,23 @@ CREATE TABLE if not exists foods(
 
 DELIMITER //
 CREATE PROCEDURE add_food (
-	IN p_name VARCHAR(25),
+	IN p_name_food VARCHAR(25),
     IN p_calories DOUBLE,
     IN p_proteins DOUBLE,
     IN p_carbohydrates DOUBLE,
-    IN p_fats DOUBLE, 
+    IN p_total_sugar DOUBLE,
+    IN p_added_sugar DOUBLE,
+    IN p_total_fats DOUBLE,
+    IN p_trans_fats DOUBLE,
+    IN p_monounsaturated_fats DOUBLE,
+    IN p_polyunsaturated_fats DOUBLE,
+    IN p_satured_fats DOUBLE, 
     IN p_fibers DOUBLE, 
 	IN p_sodium DOUBLE 
 )
 BEGIN
-	INSERT INTO foods(name, calories, proteins, carbohydrates, fats, fibers, sodium)
-	VALUES (p_name, p_calories, p_proteins, p_carbohydrates, p_fats, p_fibers, p_sodium);
+	INSERT INTO foods(name_food, calories, proteins, carbohydrates, total_sugar, added_sugar, total_fats, trans_fats, monounsaturated_fats, polyunsaturated_fats,satured_fats, fibers, sodium)
+	VALUES (p_name_food, p_calories, p_proteins, p_carbohydrates, p_total_sugar, p_added_sugar, p_total_fats, p_trans_fats, p_monounsaturated_fats, p_polyunsaturated_fats, p_satured_fats, p_fibers, p_sodium);
 END //
 DELIMITER ;
 
@@ -49,7 +55,7 @@ CREATE TABLE if not exists workouts(
 );
 
 /* Tabela para reduzir a redundãncia dos dados e associar as tabelas treinos e exercicios*/
-CREATE TABLE if not exists exercises_workout(
+CREATE TABLE if not exists exercises_workouts(
 	id_exercise_workout INT AUTO_INCREMENT PRIMARY KEY,
 	min_reps TINYINT, -- Atributo vinculado ao alcance de repetições
     max_reps TINYINT, -- Atributo vinculado ao alcance de repetições
@@ -58,20 +64,36 @@ CREATE TABLE if not exists exercises_workout(
     exercise_id INT,
     workout_id INT
 );
-ALTER TABLE exercises_workout
+ALTER TABLE exercises_workouts
 ADD CONSTRAINT fk_exercise
 FOREIGN KEY (exercise_id) REFERENCES exercises(id_exercise);
 
-ALTER TABLE exercises_workout
+ALTER TABLE exercises_workouts
 ADD CONSTRAINT fk_workout
 FOREIGN KEY (workout_id) REFERENCES workouts(id_workout);
 
-CREATE TABLE if not exists user(
+CREATE TABLE if not exists users(
 	id_user INT AUTO_INCREMENT PRIMARY KEY,
     name_user VARCHAR(25) NOT NULL,
     password VARCHAR(25) NOT NULL
 );
+
+CREATE TABLE if not exists players(
+	id_player INT AUTO_INCREMENT PRIMARY KEY,
+    height DOUBLE,
+    weight DOUBLE,
+    user_id INT
+);
+ALTER TABLE players
+ADD CONSTRAINT fk_user_player
+FOREIGN KEY (user_id) REFERENCES users(id_user);
+
 CREATE TABLE if not exists personal_trainers(
 	id_personal_trainer INT AUTO_INCREMENT PRIMARY KEY,
-    cref VARCHAR(20) NOT NULL UNIQUE
+    cref VARCHAR(20) NOT NULL UNIQUE,
+    cpf VARCHAR(11) NOT NULL UNIQUE,
+	user_id INT
 );
+ALTER TABLE personal_trainers
+ADD CONSTRAINT fk_user_personal_trainer
+FOREIGN KEY (user_id) REFERENCES users(id_user);
